@@ -22,3 +22,10 @@ export interface BookCard {
   category: Category;
   cover_url: string;
 }
+
+export interface User {
+   id: string;
+   username: string;
+   email: string;
+   role_id: string;
+}

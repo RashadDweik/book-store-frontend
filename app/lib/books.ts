@@ -1,5 +1,5 @@
 import { BookCard } from "@/app/lib/definitions";
-import { API_BASE_URL } from "./api";
+import { INTERNAL_API_BASE_URL } from "./api";
 import { notFound } from "next/navigation";
 
 export interface FetchBooksFilters {
@@ -29,8 +29,8 @@ export async function fetchBooks(
 
     //adjust url based on query params
     const url = queryParams.toString()
-      ? `${API_BASE_URL}/books?${queryParams.toString()}`
-      : `${API_BASE_URL}/books`;
+      ? `${INTERNAL_API_BASE_URL}/books?${queryParams.toString()}`
+      : `${INTERNAL_API_BASE_URL}/books`;
 
     //fetch books
     const res = await fetch(url, {
@@ -63,7 +63,7 @@ export async function fetchBooks(
 
 
 export async function getBookDetails(id: string): Promise<BookCard> {
-  const url = `${API_BASE_URL}/books/${id}`;
+  const url = `${INTERNAL_API_BASE_URL}/books/${id}`;
 
   try {
     const res = await fetch(url, {

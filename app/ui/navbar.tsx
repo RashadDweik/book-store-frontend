@@ -10,8 +10,8 @@ export default function Navbar() {
         <Link href={"/categories"}>Categories</Link>
       </div>
       <div className="flex gap-4 me-3">
-        <Link href={"/login"}>Login</Link>
-        <Link href={"signup"}>Signup</Link>
+        <Link href={'/auth/login'}>Login</Link>
+        <Link href={'/auth/signup'}>Signup</Link>
       </div>
     </nav>
   );
