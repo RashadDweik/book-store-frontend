@@ -1,13 +1,12 @@
 import AuthorGrid from '@/app/ui/authors/author-grid';
-import { fetchAuthors } from '@/app/lib/authors'
+import { fetchAuthors } from '@/app/lib/authors';
 
 export default async function AuthorsPage() {
-  // Fetch authors from backend
   const authors = await fetchAuthors();
 
   return (
-    <main className="min-h-screen bg-zinc-50 text-zinc-900">
-      {/* Structural container matching the exact layout padding */}
+    // Replaced bg-zinc-50 with pure white (dark:zinc-950) to make the grid item cards pop seamlessly against their borders
+    <main className="min-h-screen bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
       <div className="py-12 sm:py-20">
         <AuthorGrid authors={authors} />
       </div>

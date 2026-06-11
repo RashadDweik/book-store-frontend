@@ -7,13 +7,13 @@ interface AuthorGridProps {
 
 export default function AuthorGrid({ authors }: AuthorGridProps) {
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-12">
+    <div className="w-full max-w-6xl mx-auto px-4">
       {/* Section Header */}
-      <div className="mb-10 border-b border-zinc-200 pb-4">
+      <div className="mb-8 border-b border-zinc-200 pb-4 dark:border-zinc-800">
         <h2 className="text-xs font-mono uppercase tracking-widest text-zinc-400 mb-1">
           Meet Our
         </h2>
-        <h3 className="text-2xl font-light tracking-tight text-zinc-900">
+        <h3 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
           Authors
         </h3>
       </div>
@@ -27,17 +27,17 @@ export default function AuthorGrid({ authors }: AuthorGridProps) {
               pathname: '/',
               query: { authorId: author.id }
             }}
-            className="group relative block overflow-hidden border border-zinc-200 bg-white p-5 transition-all duration-300 hover:border-zinc-900"
+            className="group relative block border border-zinc-200 bg-white p-4 transition-colors duration-200 hover:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-50"
           >
-            {/* Subtle background accent on hover */}
-            <div className="absolute inset-0 opacity-0 bg-zinc-50 transition-opacity duration-300 group-hover:opacity-100" />
-
-            {/* Compact layout matching the category layout height */}
-            <div className="relative z-10 flex flex-col h-20 justify-between">
-              {/* Top Row: Optional Role / Decorative Arrow */}
-              <div className="flex justify-between items-start">           
+            {/* Compact layout adhering strictly to sharp layout parameters */}
+            <div className="flex flex-col h-20 justify-between">
+              {/* Top Row: Monospace Role / Arrow Icon */}
+              <div className="flex justify-between items-start">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">
+                  Contributor
+                </span>
                 <svg
-                  className="w-4 h-4 text-zinc-400 transition-all duration-300 transform -translate-x-1 translate-y-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-zinc-900"
+                  className="w-3.5 h-3.5 text-zinc-300 transition-colors duration-200 group-hover:text-zinc-900 dark:text-zinc-600 dark:group-hover:text-zinc-50"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -48,7 +48,7 @@ export default function AuthorGrid({ authors }: AuthorGridProps) {
               </div>
 
               {/* Bottom Row: Author Name */}
-              <h4 className="text-base font-medium tracking-tight text-zinc-700 transition-colors duration-300 group-hover:text-zinc-950">
+              <h4 className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 {author.name}
               </h4>
             </div>
