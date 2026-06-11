@@ -1,1 +1,77 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Primary theme parameters (Light) */
+    --background: #ffffff;
+    --foreground: #18181b; /* zinc-900 */
+    
+    /* Selection overrides */
+    ::selection {
+      background-color: #f4f4f5; /* zinc-100 */
+      color: #09090b; /* zinc-950 */
+    }
+  }
+
+  .dark {
+    /* Primary theme parameters (Dark) */
+    --background: #09090b; /* zinc-950 */
+    --foreground: #f4f4f5; /* zinc-100 */
+
+    /* Selection overrides */
+    ::selection {
+      background-color: #27272a; /* zinc-800 */
+      color: #ffffff;
+    }
+  }
+
+  body {
+    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Force monospace font handling across your code tokens globally */
+  code, 
+  kbd, 
+  samp, 
+  .font-mono {
+    font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  }
+
+  /* Strip out standard blue focus rings on inputs to preserve fine-border transitions */
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  /* Smooth out default webkit scrollbars into slim clean tracks */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #e4e4e7; /* zinc-200 */
+  }
+
+  .dark ::webkit-scrollbar-thumb {
+    background: #27272a; /* zinc-800 */
+  }
+}
+
+/* Custom layout utility configurations */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

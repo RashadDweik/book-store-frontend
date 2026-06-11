@@ -7,14 +7,21 @@ interface BookGridProps {
 }
 
 export default function BookGrid({ books }: BookGridProps) {
-   if (!books || books.length == 0){
-     return <div className=" mt-10 text-center text-neutral-500">No books available.</div>
-   }
-   return (
-    <div className="grid w-full p-2 my-2 mt-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  if (!books || books.length === 0) {
+    return (
+      <div className="w-full text-center py-12 border border-dashed border-zinc-200 dark:border-zinc-800">
+        <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+          No books available
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
       {books.map((book) => (
         <Card key={book.id} {...book} />
       ))}
     </div>
-   )
+  );
 }
