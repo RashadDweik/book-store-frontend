@@ -1,4 +1,4 @@
-'user server'
+'use server'
 
 import { signupSchema, loginSchema } from "./schemas";
 import { z } from "zod";
