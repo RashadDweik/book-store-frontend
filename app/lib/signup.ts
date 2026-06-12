@@ -1,47 +1,7 @@
-'use server'
-
-import { signupSchema, loginSchema } from "./schemas";
-import { z } from "zod";
-import { STATUS_MESSAGES } from "./api";
-import { getInternalApiBaseUrl } from "@/app/lib/api";
-import { redirect } from "next/navigation";
-
-export interface ActionState {
-  success?: boolean;
-  message: string;
-  errors?: {
-    username?: string[];
-    email?: string[];
-    password?: string[];
-    confirmPassword?: string[];
-  };
-}
-
-export async function loginAction(
-  prevState: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
-  const validated = loginSchema.safeParse(Object.fromEntries(formData));
-
-  if (!validated.success) {
-    const tree = z.treeifyError(validated.error);
-
-    const errors = {
-      email: tree.properties?.email?.errors ?? [],
-      password: tree.properties?.password?.errors ?? [],
-    };
-
-    return {
-      success: false,
-      message: "Please review your fields and try again",
-      errors,
-    };
-  }
-  return {
-    success: false,
-    message: "Please review your fields and try again",
-  };
-}
+import { ActionState , getInternalApiBaseUrl , STATUS_MESSAGES} from "./api";
+import { signupSchema } from "./schemas";
+import { z } from 'zod'
+import { redirect } from 'next/navigation'
 
 export async function signupAction(
   prevState: ActionState,

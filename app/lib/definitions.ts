@@ -24,8 +24,7 @@ export interface BookCard {
 }
 
 export interface User {
-   id: string;
-   username: string;
+   name: string;
    email: string;
    role_id: string;
 }

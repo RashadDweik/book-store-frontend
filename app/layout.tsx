@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from '@/app/ui/navbar';
 import "./globals.css";
+import { getSession ,  Session } from "./lib/session";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,11 +19,16 @@ export const metadata: Metadata = {
   description: "Minimalist book archiving and management platform",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  //user session and auth state
+   const session : Session = await getSession()
+   const isAuthenticated = session.isAuthenticated
+
   return (
     <html
       lang="en"
@@ -30,7 +36,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-200">
         {/* Navigation Layer */}
-        <Navbar />
+        <Navbar isAuthenticated={isAuthenticated}/>
         
         {/* Main Content Area */}
         <main className="w-full flex-1 flex flex-col">
