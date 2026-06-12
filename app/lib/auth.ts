@@ -1,3 +1,5 @@
+'user server'
+
 import { signupSchema, loginSchema } from "./schemas";
 import { z } from "zod";
 import { STATUS_MESSAGES } from "./api";
