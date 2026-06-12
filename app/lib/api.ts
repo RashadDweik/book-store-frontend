@@ -5,7 +5,7 @@ export const getInternalApiBaseUrl = () => {
   return url;
 };
 
-console.log(getInternalApiBaseUrl)
+console.log(getInternalApiBaseUrl())
 
 export const STATUS_MESSAGES: Record<number, string> = {
         400: "Invalid Input Data",
