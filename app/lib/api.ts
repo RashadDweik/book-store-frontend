@@ -1,4 +1,4 @@
-export const INTERNAL_API_BASE_URL = process.env.INTERNAL_API_BASE_URL || "http://localhost:8000/api/v1"
+export const INTERNAL_API_BASE_URL = process.env.INTERNAL_API_BASE_URL
 
 console.log(INTERNAL_API_BASE_URL)
 
