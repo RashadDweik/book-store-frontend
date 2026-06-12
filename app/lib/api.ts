@@ -1,5 +1,6 @@
 export const INTERNAL_API_BASE_URL = process.env.INTERNAL_API_BASE_URL || "http://localhost:8000/api/v1"
 
+console.log(INTERNAL_API_BASE_URL)
 
 export const STATUS_MESSAGES: Record<number, string> = {
         400: "Invalid Input Data",
