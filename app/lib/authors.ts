@@ -1,6 +1,6 @@
 import { Author } from '@/app/lib/definitions';
 import { notFound } from 'next/navigation';
-import { getInternalApiBaseUrl() } from './api';
+import { getInternalApiBaseUrl } from "@/app/lib/api";
 
 export async function fetchAuthors() : Promise<Author[]>{
 
