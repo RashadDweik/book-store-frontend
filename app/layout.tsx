@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from '@/app/ui/navbar';
@@ -25,9 +26,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  //user session and auth state
-   const session : Session = await getSession()
-   const isAuthenticated = session.isAuthenticated
+   
+  
+  
+  const session = await getSession();
+  // Safely extract user profile if authenticated
 
   return (
     <html
@@ -36,7 +39,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-200">
         {/* Navigation Layer */}
-        <Navbar isAuthenticated={isAuthenticated}/>
+        <Navbar isAuthenticated={session.isAuthenticated}/>
         
         {/* Main Content Area */}
         <main className="w-full flex-1 flex flex-col">

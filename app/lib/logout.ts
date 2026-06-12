@@ -5,6 +5,10 @@ import { redirect } from "next/navigation";
 
 export async function logoutAction() {
   const cookieStore = await cookies();
+  
+  // Clear out both cookies synchronously on the server
   cookieStore.delete("refresh_token");
-  redirect("/login");
+  cookieStore.delete("access_token");
+  
+  redirect("/auth/login");
 }

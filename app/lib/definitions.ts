@@ -28,3 +28,25 @@ export interface User {
    email: string;
    role_id: string;
 }
+
+
+export const STATUS_MESSAGES: Record<number, string> = {
+  400: "Invalid Input Data",
+  404: "Authentication service unavailable (404).",
+  409: "An account with this email already exists.",
+  500: "Internal server error. Please try again later.",
+  401: "Invalid email or password",
+  403: "Access Denied"
+};
+
+export interface ActionState {
+  success?: boolean;
+  message: string;
+  accessToken?: string;
+  errors?: {
+    username?: string[];
+    email?: string[];
+    password?: string[];
+    confirmPassword?: string[];
+  };
+}

@@ -8,7 +8,7 @@ export function middleware(req: NextRequest) {
   const isAuthenticated = !!refreshToken;
   const path = req.nextUrl.pathname;
 
-  // Redirect logged-in users away from auth pages
+  // Redirect logged in users away from auth pages
   if (isAuthenticated && AUTH_ROUTES.some((r) => path.startsWith(r))) {
     return NextResponse.redirect(new URL("/", req.url));
   }
@@ -20,10 +20,16 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Pass auth state to server components via header
-  const res = NextResponse.next();
-  res.headers.set("x-is-authenticated", String(isAuthenticated));
-  return res;
+  // Clone request headers to inject authentication state safely
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-is-authenticated", String(isAuthenticated));
+
+  // Pass the updated request headers down to server components
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {

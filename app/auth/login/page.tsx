@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { loginAction } from '@/app/lib/login';
-import { ActionState } from '@/app/lib/api';
+import { ActionState } from '@/app/lib/definitions';
 
 const initialState: ActionState = { success: false, message: '' };
 

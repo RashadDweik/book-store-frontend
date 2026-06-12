@@ -1,5 +1,8 @@
-import { ActionState , getInternalApiBaseUrl , STATUS_MESSAGES} from "./api";
+'use server';
+
+import { getInternalApiBaseUrl } from "./api";
 import { signupSchema } from "./schemas";
+import { STATUS_MESSAGES , ActionState } from "@/app/lib/definitions";
 import { z } from 'zod'
 import { redirect } from 'next/navigation'
 
