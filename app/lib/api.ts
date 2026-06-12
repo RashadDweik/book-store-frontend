@@ -1,6 +1,11 @@
-export const INTERNAL_API_BASE_URL = process.env.INTERNAL_API_BASE_URL
+//export getter instead of const
+export const getInternalApiBaseUrl = () => {
+  const url = process.env.INTERNAL_API_BASE_URL;
+  if (!url) throw new Error("INTERNAL_API_BASE_URL is not defined");
+  return url;
+};
 
-console.log(INTERNAL_API_BASE_URL)
+console.log(getInternalApiBaseUrl)
 
 export const STATUS_MESSAGES: Record<number, string> = {
         400: "Invalid Input Data",

@@ -1,7 +1,7 @@
 import { signupSchema, loginSchema } from "./schemas";
 import { z } from "zod";
 import { STATUS_MESSAGES } from "./api";
-import { INTERNAL_API_BASE_URL } from "./api";
+import { getInternalApiBaseUrl } from "@/app/lib/api";
 import { redirect } from "next/navigation";
 
 export interface ActionState {
@@ -73,7 +73,7 @@ export async function signupAction(
 
   try {
     //define url
-    const url = `${INTERNAL_API_BASE_URL}/auth/register`;
+    const url = `${getInternalApiBaseUrl()}/auth/register`;
     console.log(url);
 
     //create body from formData

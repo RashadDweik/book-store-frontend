@@ -1,11 +1,11 @@
 import { Author } from '@/app/lib/definitions';
 import { notFound } from 'next/navigation';
-import { INTERNAL_API_BASE_URL } from './api';
+import { getInternalApiBaseUrl() } from './api';
 
 export async function fetchAuthors() : Promise<Author[]>{
 
     try {
-        const url = `${INTERNAL_API_BASE_URL}/authors`
+        const url = `${getInternalApiBaseUrl()}/authors`
         const res = await fetch(url , {
             method: 'GET',
             headers: {

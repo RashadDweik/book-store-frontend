@@ -1,10 +1,10 @@
 import { Category } from "@/app/lib/definitions";
-import { INTERNAL_API_BASE_URL } from "./api";
+import { getInternalApiBaseUrl } from "@/app/lib/api";
 import { notFound } from "next/navigation";
 
 export async function fetchCategories(): Promise<Category[]> {
   try {
-    const url = `${INTERNAL_API_BASE_URL}/categories`;
+    const url = `${getInternalApiBaseUrl()}/categories`;
     const res = await fetch(url, {
       method: "GET",
       headers: {
