@@ -29,6 +29,19 @@ export interface User {
    role_id: string;
 }
 
+export interface WishlistItem {
+  id: string;
+  created_at: string;
+  book: BookCard;
+}
+
+export interface WishlistResponse {
+  id: string;
+  user_id: string;
+  created_at: string;
+  items: WishlistItem[];
+}
+
 
 export const STATUS_MESSAGES: Record<number, string> = {
   400: "Invalid Input Data",

@@ -1,15 +1,24 @@
 import Image from "next/image";
 import { getBookDetails } from "@/app/lib/books/books";
-import { BookCard } from "@/app/lib/definitions";
+import { BookCard, WishlistResponse } from "@/app/lib/definitions";
+import WishlistButton from "@/app/ui/wishlist/wishlist-button";
+import { fetchWishlist } from "@/app/lib/wishlist/wishlist";
 import Link from "next/link";
+import { getSession } from "@/app/lib/auth/session";
 
 interface PageProps {
   params: Promise<{ id: string }>
 }
 
 export default async function BookDetailsPage({ params }: PageProps) {
+  const session = await getSession();
+
   const { id } = await params;
+
   const book: BookCard = await getBookDetails(id);
+  const wishlist : WishlistResponse = await fetchWishlist();
+  const isInWishlist = wishlist.items.some((item) => item.book.id === book.id);
+  const bookItem = wishlist.items.find((item) => item.book.id === book.id);
   const isAvailable = book.stock > 0;
 
   return (
@@ -110,6 +119,8 @@ export default async function BookDetailsPage({ params }: PageProps) {
               {isAvailable ? "Add to Cart" : "Unavailable"}
             </button>
 
+            {/* Wishlist Button */}
+            <WishlistButton bookId={book.id} itemId={bookItem?.id} initialStatus={isInWishlist} isAuthenticated={session.isAuthenticated} />
           </div>
         </div>
       </div>
