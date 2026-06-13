@@ -1,6 +1,6 @@
 "use server";
 
-import { loginSchema } from "./schemas";
+import { loginSchema } from "../schemas";
 import { z } from "zod";
 import { getInternalApiBaseUrl} from "@/app/lib/api";
 import { redirect } from "next/navigation";

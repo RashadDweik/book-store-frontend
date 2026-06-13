@@ -1,7 +1,7 @@
 // server component
 import BookGrid from "../ui/books/book-grid";
 import SearchBar from "../ui/search";
-import { fetchBooks } from "../lib/books";
+import { fetchBooks } from "../lib/books/books";
 
 type SearchParams = Promise<{
   q?: string;

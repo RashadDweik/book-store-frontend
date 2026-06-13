@@ -1,5 +1,5 @@
 import CategoryGrid from '../ui/categories/category-grid';
-import { fetchCategories } from '../lib/categories';
+import { fetchCategories } from '../lib/categories/categories';
 
 export default async function Page() {
   const categories = await fetchCategories();

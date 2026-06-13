@@ -10,5 +10,5 @@ export async function logoutAction() {
   cookieStore.delete("refresh_token");
   cookieStore.delete("access_token");
   
-  redirect("/auth/login");
+  redirect("/");
 }

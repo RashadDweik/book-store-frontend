@@ -1,5 +1,5 @@
 import AuthorGrid from '@/app/ui/authors/author-grid';
-import { fetchAuthors } from '@/app/lib/authors';
+import { fetchAuthors } from '@/app/lib/authors/authors';
 
 export default async function AuthorsPage() {
   const authors = await fetchAuthors();

@@ -1,4 +1,4 @@
-import { refreshTokens } from "@/app/lib/refresh";
+import { refreshTokens } from "@/app/lib/auth/refresh";
 import { cookies } from "next/headers"; // Import native headers utility
 
 export function getInternalApiBaseUrl() {

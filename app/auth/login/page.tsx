@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { loginAction } from '@/app/lib/login';
+import { loginAction } from '@/app/lib/auth/login';
 import { ActionState } from '@/app/lib/definitions';
 
 const initialState: ActionState = { success: false, message: '' };

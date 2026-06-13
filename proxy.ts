@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const PROTECTED_ROUTES = ["/dashboard", "/account", "/settings"];
-const AUTH_ROUTES = ["/auth/login", "/auth/register"];
+const AUTH_ROUTES = ["/auth/login", "/auth/signup"];
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const refreshToken = req.cookies.get("refresh_token")?.value;
   const isAuthenticated = !!refreshToken;
   const path = req.nextUrl.pathname;

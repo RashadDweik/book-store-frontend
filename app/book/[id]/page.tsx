@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getBookDetails } from "@/app/lib/books";
+import { getBookDetails } from "@/app/lib/books/books";
 import { BookCard } from "@/app/lib/definitions";
 import Link from "next/link";
 
