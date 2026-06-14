@@ -35,9 +35,6 @@ export async function proxy(req: NextRequest) {
   // If refresh token exists but access token is missing, refresh here
   if (refreshToken && !accessToken && isPageRequest){
 
-    console.log("Token being sent to FastAPI:", refreshToken);
-    console.log("Token length:", refreshToken?.length);
-
     const refreshRes = await fetch(
       'http://localhost:8000/api/v1/auth/refresh',
       {
@@ -48,9 +45,6 @@ export async function proxy(req: NextRequest) {
       },
     );
 
-    console.log("refreshRes status:", refreshRes.status);
-    const setCookie = refreshRes.headers.get("set-cookie");
-    console.log("set-cookie from route handler:", setCookie);
 
     if (refreshRes.ok) {
       const body = await refreshRes.json();

@@ -1,5 +1,3 @@
-// app/lib/session.ts
-import { cookies } from "next/headers";
 import { cache } from "react";
 import { apiFetch } from "@/app/lib/api";
 import { User } from '@/app/lib/definitions';
@@ -15,6 +13,7 @@ export type Session =
  */
 export const getSession = cache(async (): Promise<Session> => {
   try {
+    
     const res = await apiFetch("/users/me");
 
     if (!res.ok) {
