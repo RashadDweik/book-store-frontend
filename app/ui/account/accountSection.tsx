@@ -4,7 +4,7 @@ import { logoutAction } from '@/app/lib/auth/logout';
 import { User } from '@/app/lib/definitions';
 
 interface AccountSectionProps {
-  user: User;
+  user?: User | null;
 }
 
 export default function AccountSection({ user }: AccountSectionProps) {

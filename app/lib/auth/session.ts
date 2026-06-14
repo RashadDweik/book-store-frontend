@@ -15,24 +15,14 @@ export type Session =
  */
 export const getSession = cache(async (): Promise<Session> => {
   try {
-    const cookieStore = await cookies();
-    const hasAccessToken = cookieStore.has("access_token");
-    const hasRefreshToken = cookieStore.has("refresh_token");
-
-    // Optimization: If both cookies are missing, skip the network round-trip entirely
-    if (!hasAccessToken && !hasRefreshToken) {
-      return { isAuthenticated: false, user: null };
-    }
-
-    // apiFetch automatically handles appending the token or running a silent refresh
     const res = await apiFetch("/users/me");
-    
+
     if (!res.ok) {
       return { isAuthenticated: false, user: null };
     }
 
     const user = await res.json();
-    
+
     return {
       isAuthenticated: true,
       user: {
@@ -41,9 +31,7 @@ export const getSession = cache(async (): Promise<Session> => {
         role_id: user.role_id,
       },
     };
-  } catch (error) {
-    // Gracefully catches network dropped errors or the SESSION_EXPIRED exception from apiFetch
-    console.error("Session verification failed:", error);
+  } catch {
     return { isAuthenticated: false, user: null };
   }
 });

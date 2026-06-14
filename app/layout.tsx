@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from '@/app/ui/navbar';
 import "./globals.css";
-import { headers } from "next/headers";
+import { getSession } from "@/app/lib/auth/session";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +26,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-   
-  const headersList = await headers();
-  const isAuthenticated = headersList.get("x-is-authenticated") === "true";
+  
+  const session = await getSession();
 
   return (
     <html
@@ -37,7 +36,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-200">
         {/* Navigation Layer */}
-        <Navbar isAuthenticated={isAuthenticated}/>
+        <Navbar isAuthenticated={session.isAuthenticated}/>
         
         {/* Main Content Area */}
         <main className="w-full flex-1 flex flex-col">
