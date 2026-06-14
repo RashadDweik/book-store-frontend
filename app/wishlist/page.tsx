@@ -1,16 +1,9 @@
-import { getSession } from "@/app/lib/auth/session";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { fetchWishlist } from "../lib/wishlist/wishlist";
 import { WishlistResponse } from "../lib/definitions";
 import { WishlistItemRow } from "@/app/ui/wishlist/wishlist-item";
 
 export default async function WishlistPage() {
-  const session = await getSession();
-
-  if (!session.isAuthenticated) {
-    redirect("/auth/login");
-  }
 
   const wishlist: WishlistResponse = await fetchWishlist();
   const wishlistItems = wishlist.items || [];

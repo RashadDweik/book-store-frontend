@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PROTECTED_ROUTES = ["/dashboard", "/account", "/settings"];
+const PROTECTED_ROUTES = ["/dashboard", "/account", "/settings" , "/wishlist"];
 const AUTH_ROUTES = ["/auth/login", "/auth/signup"];
 
 export function proxy(req: NextRequest) {
@@ -15,7 +15,7 @@ export function proxy(req: NextRequest) {
 
   // Redirect unauthenticated users away from protected pages
   if (!isAuthenticated && PROTECTED_ROUTES.some((r) => path.startsWith(r))) {
-    const loginUrl = new URL("/login", req.url);
+    const loginUrl = new URL("/auth/login", req.url);
     loginUrl.searchParams.set("next", path); // preserve intended destination
     return NextResponse.redirect(loginUrl);
   }
