@@ -24,7 +24,7 @@ export default async function Page() {
         <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
           <p className="text-zinc-500">Your cart is empty.</p>
           <Link
-            href="/books"
+            href="/"
             className="text-sm border border-zinc-300 px-5 py-2 hover:border-zinc-600 transition-colors"
           >
             Browse Catalog
