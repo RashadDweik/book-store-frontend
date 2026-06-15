@@ -1,4 +1,3 @@
-import { parse } from "cookie";
 import { NextRequest, NextResponse } from "next/server";
 
 const PROTECTED_ROUTES = [
@@ -15,8 +14,6 @@ export async function proxy(req: NextRequest) {
   const accessToken = req.cookies.get("access_token")?.value;
   const path = req.nextUrl.pathname;
   const isAuthenticated = !!refreshToken;
-
-  // Only process page navigations, not assets or API calls
   const isPageRequest = req.headers.get("accept")?.includes("text/html");
 
   if (isAuthenticated && AUTH_ROUTES.some((r) => path.startsWith(r))) {
@@ -32,32 +29,24 @@ export async function proxy(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-is-authenticated", String(isAuthenticated));
 
-  // If refresh token exists but access token is missing, refresh here
-  if (refreshToken && !accessToken && isPageRequest){
-
-    const refreshRes = await fetch(
-      'http://localhost:8000/api/v1/auth/refresh',
-      {
-        method: "POST",
-        headers: {
-          Cookie: `refresh_token=${refreshToken}`,
-        },
+  if (refreshToken && !accessToken && isPageRequest) {
+    const refreshRes = await fetch(`${req.nextUrl.origin}/api/auth/refresh`, {
+      method: "POST",
+      headers: {
+        Cookie: `refresh_token=${refreshToken}`,
       },
-    );
-
+    });
 
     if (refreshRes.ok) {
       const body = await refreshRes.json();
       const newAccessToken = body.access_token;
+      const newRefreshToken = body.refresh_token;
 
-      // Inject the new token into the request headers for server components
       requestHeaders.set("x-access-token", newAccessToken);
 
-      const response = NextResponse.next({
-        request: { headers: requestHeaders },
-      });
+      const response = NextResponse.next({ request: { headers: requestHeaders } });
 
-      // Set cookies on the response
+      // Set cookies explicitly — don't forward route handler set-cookie headers
       response.cookies.set("access_token", newAccessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -66,22 +55,22 @@ export async function proxy(req: NextRequest) {
         maxAge: 60 * 15,
       });
 
-      // Forward rotated refresh token if backend returned one
-      const setCookie = refreshRes.headers.get("set-cookie");
-      if (setCookie) {
-        const parsed = parse(setCookie);
-        const newRefreshToken = parsed["refresh_token"];
-        if (newRefreshToken) {
-          response.cookies.set("refresh_token", newRefreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: 60 * 60 * 24 * 7,
-          });
-        }
+      if (newRefreshToken) {
+        response.cookies.set("refresh_token", newRefreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 7,
+        });
       }
 
+      return response;
+    } else {
+      const loginUrl = new URL("/auth/login", req.url);
+      const response = NextResponse.redirect(loginUrl);
+      response.cookies.delete("access_token");
+      response.cookies.delete("refresh_token");
       return response;
     }
   }
@@ -90,5 +79,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/).*)",],
 };

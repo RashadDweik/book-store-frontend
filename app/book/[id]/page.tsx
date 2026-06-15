@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getBookDetails } from "@/app/lib/books/books";
 import { BookCard, WishlistResponse } from "@/app/lib/definitions";
 import WishlistButton from "@/app/ui/wishlist/wishlist-button";
+import CartButton from "@/app/ui/cart/cart-button";
 import { fetchWishlist } from "@/app/lib/wishlist/wishlist";
 import Link from "next/link";
 import { getSession } from "@/app/lib/auth/session";
@@ -111,13 +112,11 @@ export default async function BookDetailsPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Call to Action Button */}
-            <button
-              disabled={!isAvailable}
-              className="w-full bg-zinc-900 text-white text-sm font-medium py-3 px-4 transition-colors duration-200 hover:bg-zinc-800 focus:outline-none disabled:bg-zinc-200 disabled:text-zinc-400 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-600"
-            >
-              {isAvailable ? "Add to Cart" : "Unavailable"}
-            </button>
+          
+            {/* Action Buttons */}
+
+            {/* Cart Button */}
+            <CartButton bookId={book.id} isAvailable={isAvailable} isAuthenticated={session.isAuthenticated} stock={book.stock} />
 
             {/* Wishlist Button */}
             <WishlistButton bookId={book.id} itemId={bookItem?.id} initialStatus={isInWishlist} isAuthenticated={session.isAuthenticated} />

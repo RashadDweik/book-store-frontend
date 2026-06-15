@@ -32,8 +32,12 @@ export async function apiFetch(
   });
 
   if (res.status === 401) {
-    throw new Error("SESSION_EXPIRED");
+      return new Response(JSON.stringify({ detail: "Session expired" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   return res;
 }
+

@@ -42,6 +42,20 @@ export interface WishlistResponse {
   items: WishlistItem[];
 }
 
+export interface CartItem {
+  id: string;
+  created_at: string;
+  quantity: number;
+  book: BookCard;
+}
+
+export interface CartResponse {
+  id: string;
+  user_id: string;
+  created_at: string;
+  items: CartItem[];
+}
+
 
 export const STATUS_MESSAGES: Record<number, string> = {
   400: "Invalid Input Data",
