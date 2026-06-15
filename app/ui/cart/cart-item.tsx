@@ -29,10 +29,10 @@ export function CartItemRow({ item }: { item: CartItem }) {
     <li className={`flex items-center gap-5 lg:gap-8 py-5 transition-opacity ${loading ? "opacity-40" : ""}`}>
       {/* Cover */}
       <div className="relative w-12 h-16 lg:w-16 lg:h-20 shrink-0 bg-zinc-100">
-        {item.book?.cover_url ? (
+        {item.book.cover_url ? (
           <Image
-            src={item.book?.cover_url}
-            alt={item.book?.title}
+            src={item.book.cover_url}
+            alt={item.book.title}
             fill
             className="object-cover"
           />
@@ -43,11 +43,11 @@ export function CartItemRow({ item }: { item: CartItem }) {
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <Link href={`/books/${item.book?.id}`} className="hover:underline underline-offset-2">
-          <h2 className="font-medium text-sm lg:text-base truncate">{item.book?.title}</h2>
+        <Link href={`/books/${item.book.id}`} className="hover:underline underline-offset-2">
+          <h2 className="font-medium text-sm lg:text-base truncate">{item.book.title}</h2>
         </Link>
         <p className="text-xs lg:text-sm text-zinc-400 mt-0.5 truncate">
-          {item.book?.authors?.map((a) => a.name).join(", ")}
+          {item.book.authors?.map((a) => a.name).join(", ")}
         </p>
       </div>
 
@@ -72,7 +72,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
 
       {/* Price */}
       <span className="text-sm lg:text-base text-zinc-600 shrink-0">
-        ${(parseFloat(item.book?.price) * quantity).toFixed(2)}
+        ${(parseFloat(item.book.price) * quantity).toFixed(2)}
       </span>
 
       {/* Remove */}
