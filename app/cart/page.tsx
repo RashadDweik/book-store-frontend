@@ -3,7 +3,7 @@ import { fetchCart } from "@/app/lib/cart/actions";
 import { CartItem } from "@/app/lib/definitions";
 import { CartItemRow } from "@/app/ui/cart/cart-item";
 
-export default async function CartPage() {
+export default async function Page() {
     
   const cart = await fetchCart();
   const cartItems = cart.items || [];
