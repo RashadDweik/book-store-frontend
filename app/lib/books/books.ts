@@ -1,16 +1,7 @@
 import { BookCard } from "@/app/lib/definitions";
 import { getInternalApiBaseUrl } from "@/app/lib/api";
 import { notFound } from "next/navigation";
-
-export interface FetchBooksFilters {
-  q?: string;
-  category_id?: string;
-  author_id?: string;
-  sort?: string;
-  min_price?: string;
-  max_price?: string;
-  in_stock?: string;
-}
+import { FetchBooksFilters } from "@/app/lib/definitions";
 
 export async function fetchBooks(
   filters?: FetchBooksFilters,

@@ -5,18 +5,9 @@ import FiltersPanel from "../ui/books/filters-panel";
 import { fetchBooks } from "../lib/books/books";
 import { fetchCategories } from "../lib/categories/categories";
 import { fetchAuthors } from "../lib/authors/authors";
+import { FetchBooksFilters } from "../lib/definitions";
 
-type SearchParams = Promise<{
-  q?: string;
-  category_id?: string;
-  author_id?: string;
-  sort?: string;
-  min_price?: string;
-  max_price?: string;
-  in_stock?: string;
-}>;
-
-export default async function Page(props: { searchParams?: SearchParams }) {
+export default async function Page(props: { searchParams?: FetchBooksFilters }) {
   const params = await props.searchParams;
   const filters = { ...params };
 

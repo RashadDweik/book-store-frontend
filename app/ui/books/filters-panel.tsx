@@ -40,7 +40,7 @@ const SORT_OPTIONS = [
   { label: "Oldest First", value: "created_at" },
 ];
 
-// ─── Small reusable pieces ────────────────────────────────────────────────────
+// ─── Sub-Components ──────────────────────────────────────────────────────────
 
 function SelectDropdown({
   label,
@@ -148,40 +148,22 @@ function Toggle({
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1 ${
-          checked
-            ? "bg-zinc-800 dark:bg-zinc-100"
-            : "bg-zinc-200 dark:bg-zinc-700"
-        }`}
+        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1 ${checked ? "bg-zinc-800 dark:bg-zinc-100" : "bg-zinc-200 dark:bg-zinc-700"}`}
       >
         <span
-          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow transition duration-200 ${
-            checked
-              ? "translate-x-4 bg-white dark:bg-zinc-900"
-              : "translate-x-0 bg-white dark:bg-zinc-400"
-          }`}
+          className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow transition duration-200 ${checked ? "translate-x-4 bg-white dark:bg-zinc-900" : "translate-x-0 bg-white dark:bg-zinc-400"}`}
         />
       </button>
     </div>
   );
 }
 
-// ─── Active filter badge count ────────────────────────────────────────────────
+// ─── Main Component ───────────────────────────────────────────────────────────
 
-function countActiveFilters(f: FiltersState): number {
-  let n = 0;
-  if (f.sort) n++;
-  if (f.minPrice) n++;
-  if (f.maxPrice) n++;
-  if (f.inStock) n++;
-  if (f.categoryId) n++;
-  if (f.authorId) n++;
-  return n;
-}
-
-// ─── Main component ───────────────────────────────────────────────────────────
-
-export default function FiltersPanel({ categories, authors }: FiltersPanelProps) {
+export default function FiltersPanel({
+  categories,
+  authors,
+}: FiltersPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -189,42 +171,52 @@ export default function FiltersPanel({ categories, authors }: FiltersPanelProps)
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Initialise local state from URL
   const [filters, setFilters] = useState<FiltersState>({
     sort: searchParams.get("sort") ?? "",
     minPrice: searchParams.get("min_price") ?? "",
     maxPrice: searchParams.get("max_price") ?? "",
     inStock: searchParams.get("in_stock") === "true",
-    categoryId: searchParams.get("categoryId") ?? "",
-    authorId: searchParams.get("authorId") ?? "",
+    categoryId: searchParams.get("category_id") ?? "",
+    authorId: searchParams.get("author_id") ?? "",
   });
 
-  // Close on outside click
+  // 1. Sync local state when URL changes
   useEffect(() => {
-    if (!open) return;
+    setFilters({
+      sort: searchParams.get("sort") ?? "",
+      minPrice: searchParams.get("min_price") ?? "",
+      maxPrice: searchParams.get("max_price") ?? "",
+      inStock: searchParams.get("in_stock") === "true",
+      categoryId: searchParams.get("category_id") ?? "",
+      authorId: searchParams.get("author_id") ?? "",
+    });
+  }, [searchParams]);
+
+  // 2. Lock body scroll on mobile when panel is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  // Outside click & Escape handlers
+  useEffect(() => {
     function handle(e: MouseEvent) {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node))
         setOpen(false);
-      }
     }
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
-  }, [open]);
-
-  // Close on Escape
-  useEffect(() => {
-    function handle(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    document.addEventListener("keydown", handle);
-    return () => document.removeEventListener("keydown", handle);
   }, []);
 
   const applyFilters = useCallback(
     (next: FiltersState) => {
       const params = new URLSearchParams(searchParams.toString());
-
-      // Preserve existing q param
       const q = params.get("q");
       params.forEach((_, key) => params.delete(key));
       if (q) params.set("q", q);
@@ -233,19 +225,34 @@ export default function FiltersPanel({ categories, authors }: FiltersPanelProps)
       if (next.minPrice) params.set("min_price", next.minPrice);
       if (next.maxPrice) params.set("max_price", next.maxPrice);
       if (next.inStock) params.set("in_stock", "true");
-      if (next.categoryId) params.set("categoryId", next.categoryId);
-      if (next.authorId) params.set("authorId", next.authorId);
+      if (next.categoryId) params.set("category_id", next.categoryId);
+      if (next.authorId) params.set("author_id", next.authorId);
 
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`);
       });
     },
-    [pathname, router, searchParams]
+    [pathname, router, searchParams],
   );
 
-  function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  }
+function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
+  setFilters((prev) => {
+    const next = { ...prev, [key]: value };
+
+    // Validation: Ensure minPrice is not greater than maxPrice
+    const min = parseFloat(next.minPrice as string);
+    const max = parseFloat(next.maxPrice as string);
+
+    if (!isNaN(min) && !isNaN(max) && min > max) {
+      // If the user changed min, adjust max to match (or vice-versa)
+      return key === "minPrice" 
+        ? { ...next, maxPrice: next.minPrice } 
+        : { ...next, minPrice: next.maxPrice };
+    }
+
+    return next;
+  });
+}
 
   function handleApply() {
     applyFilters(filters);
@@ -253,129 +260,88 @@ export default function FiltersPanel({ categories, authors }: FiltersPanelProps)
   }
 
   function handleReset() {
-    const cleared: FiltersState = {
-      sort: "",
-      minPrice: "",
-      maxPrice: "",
-      inStock: false,
-      categoryId: "",
-      authorId: "",
-    };
-    setFilters(cleared);
-    applyFilters(cleared);
     setOpen(false);
+    router.push(pathname); // Clears all params by navigating to base path
   }
 
-  const activeCount = countActiveFilters(
-    // Count what's currently in the URL, not the pending local state
-    {
-      sort: searchParams.get("sort") ?? "",
-      minPrice: searchParams.get("min_price") ?? "",
-      maxPrice: searchParams.get("max_price") ?? "",
-      inStock: searchParams.get("in_stock") === "true",
-      categoryId: searchParams.get("categoryId") ?? "",
-      authorId: searchParams.get("authorId") ?? "",
-    }
-  );
+  const activeCount = Object.values(filters).filter(
+    (v) => v !== "" && v !== false,
+  ).length;
 
   return (
     <div className="relative" ref={panelRef}>
-      {/* Trigger button */}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-1 ${
-          open || activeCount > 0
-            ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100"
-            : "bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 border-zinc-200 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500"
-        }`}
+        className={`
+    flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors
+    ${
+      open || activeCount > 0
+        ? "bg-zinc-900 text-white border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100"
+        : "bg-white text-zinc-700 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500"
+    }
+  `}
       >
         <SlidersHorizontal size={15} />
         <span>Filters</span>
         {activeCount > 0 && (
           <span
-            className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold ${
-              open || activeCount > 0
-                ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
-                : "bg-zinc-800 text-white"
-            }`}
+            className={`
+        inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold
+        ${
+          open || activeCount > 0
+            ? "bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100"
+            : "bg-zinc-800 text-white dark:bg-zinc-700"
+        }
+      `}
           >
             {activeCount}
           </span>
         )}
       </button>
 
-      {/* Dropdown panel */}
       {open && (
         <>
-          {/* Mobile backdrop */}
           <div
             className="fixed inset-0 bg-black/20 dark:bg-black/40 z-30 sm:hidden"
-            aria-hidden
+            onClick={() => setOpen(false)}
           />
-
-          <div
-            className={`
-              z-40 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-xl
-              /* Mobile: slide up from bottom */
-              fixed bottom-0 left-0 right-0 rounded-b-none
-              /* Desktop: dropdown */
-              sm:absolute sm:bottom-auto sm:left-0 sm:right-auto sm:top-full sm:mt-2 sm:w-80 sm:rounded-xl
-            `}
-          >
-            {/* Panel header */}
+          <div className="z-40 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-xl fixed bottom-0 left-0 right-0 rounded-b-none sm:absolute sm:bottom-auto sm:left-0 sm:top-full sm:mt-2 sm:w-80 sm:rounded-xl">
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-zinc-100 dark:border-zinc-800">
-              <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-                Filters & Sorting
-              </span>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors rounded focus:outline-none focus:ring-2 focus:ring-zinc-400"
-                aria-label="Close filters"
-              >
+              <span className="text-sm font-semibold">Filters & Sorting</span>
+              <button onClick={() => setOpen(false)}>
                 <X size={16} />
               </button>
             </div>
-
-            {/* Filter body */}
             <div className="p-4 flex flex-col gap-5 max-h-[70vh] overflow-y-auto sm:max-h-none">
-              {/* Sort */}
               <SelectDropdown
                 label="Sort by"
                 value={filters.sort}
                 onChange={(v) => update("sort", v)}
                 options={SORT_OPTIONS}
               />
-
-              {/* Price range */}
               <PriceRange
                 min={filters.minPrice}
                 max={filters.maxPrice}
                 onMinChange={(v) => update("minPrice", v)}
                 onMaxChange={(v) => update("maxPrice", v)}
               />
-
-              {/* In stock */}
               <Toggle
                 label="In stock only"
                 checked={filters.inStock}
                 onChange={(v) => update("inStock", v)}
               />
-
-              {/* Divider */}
               <div className="border-t border-zinc-100 dark:border-zinc-800" />
-
-              {/* Category */}
               <SelectDropdown
                 label="Category"
                 value={filters.categoryId}
                 onChange={(v) => update("categoryId", v)}
                 placeholder="All categories"
-                options={categories.map((c) => ({ label: c.name, value: c.id }))}
+                options={categories.map((c) => ({
+                  label: c.name,
+                  value: c.id,
+                }))}
               />
-
-              {/* Author */}
               <SelectDropdown
                 label="Author"
                 value={filters.authorId}
@@ -384,23 +350,18 @@ export default function FiltersPanel({ categories, authors }: FiltersPanelProps)
                 options={authors.map((a) => ({ label: a.name, value: a.id }))}
               />
             </div>
-
-            {/* Panel footer */}
             <div className="flex items-center gap-2 px-4 py-3.5 border-t border-zinc-100 dark:border-zinc-800">
               <button
-                type="button"
                 onClick={handleReset}
-                className="flex-1 px-3 py-2 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400"
+                className="flex-1 px-3 py-2 rounded-lg text-sm font-medium border border-zinc-200"
               >
                 Reset
               </button>
               <button
-                type="button"
                 onClick={handleApply}
                 disabled={isPending}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400 disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-900 text-white"
               >
-                <Check size={14} />
                 Apply
               </button>
             </div>
