@@ -8,8 +8,8 @@ import { fetchAuthors } from "../lib/authors/authors";
 
 type SearchParams = Promise<{
   q?: string;
-  categoryId?: string;
-  authorId?: string;
+  category_id?: string;
+  author_id?: string;
   sort?: string;
   min_price?: string;
   max_price?: string;
