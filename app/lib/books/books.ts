@@ -3,9 +3,13 @@ import { getInternalApiBaseUrl } from "@/app/lib/api";
 import { notFound } from "next/navigation";
 
 export interface FetchBooksFilters {
-  categoryId?: string;
-  authorId?: string;
   q?: string;
+  category_id?: string;
+  author_id?: string;
+  sort?: string;
+  min_price?: string;
+  max_price?: string;
+  in_stock?: string;
 }
 
 export async function fetchBooks(
@@ -16,15 +20,10 @@ export async function fetchBooks(
     const queryParams = new URLSearchParams();
 
     //check for existing query params (category or author)
-    if (filters?.categoryId) {
-      queryParams.append("category_id", filters.categoryId);
-    }
-    if (filters?.authorId) {
-      queryParams.append("author_id", filters?.authorId);
-    }
-
-    if (filters?.q) {
-      queryParams.append("q", filters.q);
+    for(const [key, value] of Object.entries(filters || {})){
+      if(value){
+        queryParams.append(key, value);
+      }
     }
 
     //adjust url based on query params
