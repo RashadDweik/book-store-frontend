@@ -6,8 +6,14 @@ import { fetchBooks } from "../lib/books/books";
 import { fetchCategories } from "../lib/categories/categories";
 import { fetchAuthors } from "../lib/authors/authors";
 import { FetchBooksFilters } from "../lib/definitions";
+import Pagination from "@/app/ui/books/pagination";
+import { headers } from "next/headers";
+
+const LIMIT = 20;
 
 export default async function Page(props: { searchParams?: FetchBooksFilters }) {
+  
+  const headersList = await headers();
   const params = await props.searchParams;
   const filters = { ...params };
 
@@ -31,8 +37,9 @@ export default async function Page(props: { searchParams?: FetchBooksFilters }) 
         </div>
 
         {/* Dynamic Display Grid */}
-        <div className="px-4 mt-8">
-          <BookGrid books={books} />
+        <div className="px-4 mt-8 flex flex-col">
+          <BookGrid books={books.books} />
+          <Pagination totalCount={books.totalCount} limit={LIMIT} />
         </div>
 
       </div>

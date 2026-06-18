@@ -5,7 +5,7 @@ import { FetchBooksFilters } from "@/app/lib/definitions";
 
 export async function fetchBooks(
   filters?: FetchBooksFilters,
-): Promise<BookCard[]> {
+): Promise<{books: BookCard[] , totalCount: number}> {
   try {
     //setup query params
     const queryParams = new URLSearchParams();
@@ -41,7 +41,9 @@ export async function fetchBooks(
 
     //parse data to JSON and return it
     const data = await res.json();
-    return data;
+    const totalCount = res.headers.get("x-total-count") ? parseInt(res.headers.get("x-total-count") as string, 10) : 0;
+    
+    return { books: data, totalCount };
   } catch (error) {
     // Log the error on your server console for debugging
     console.error("Error in fetchBooks execution:", error);
