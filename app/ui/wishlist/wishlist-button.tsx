@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toggleWishlist } from "@/app/lib/wishlist/wishlist";
+import { toggleWishlist } from "@/app/lib/wishlists/actions";
 
 export default function WishlistButton({ itemId , bookId, initialStatus, isAuthenticated }: { itemId?: string, bookId?: string, initialStatus: boolean, isAuthenticated?: boolean }) {
   const [inWishlist, setInWishlist] = useState(initialStatus);

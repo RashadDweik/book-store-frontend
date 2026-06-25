@@ -1,11 +1,11 @@
 // server component
-import BookGrid from "../ui/books/book-grid";
-import SearchBar from "../ui/search";
-import FiltersPanel from "../ui/books/filters-panel";
-import { fetchBooks } from "../lib/books/books";
-import { fetchCategories } from "../lib/categories/categories";
-import { fetchAuthors } from "../lib/authors/authors";
-import { FetchBooksFilters } from "../lib/definitions";
+import BookGrid from "@/app/ui/books/book-grid";
+import SearchBar from "@/app/ui/search";
+import FiltersPanel from "@/app/ui/books/filters-panel";
+import { fetchBooks } from "@/app/lib/books/books";
+import { fetchCategories } from "@/app/lib/categories/actions";
+import { fetchAuthors } from "@/app/lib/authors/actions";
+import { FetchBooksFilters } from "@/app/lib/definitions";
 import Pagination from "@/app/ui/books/pagination";
 
 const LIMIT = 20;

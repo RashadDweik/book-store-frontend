@@ -2,7 +2,7 @@
 
 import { apiFetch } from "@/app/lib/api";
 import { revalidatePath } from "next/cache";
-import { CartResponse } from "../definitions";
+import { CartResponse } from "@/app/lib/definitions";
 
 export async function fetchCart(): Promise<CartResponse> {
   try {

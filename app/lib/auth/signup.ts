@@ -1,7 +1,7 @@
 'use server';
 
-import { getInternalApiBaseUrl } from "../api";
-import { signupSchema } from "../schemas";
+import { getInternalApiBaseUrl } from "@/app/lib/api";
+import { signupSchema } from "@/app/lib/schemas";
 import { STATUS_MESSAGES , ActionState } from "@/app/lib/definitions";
 import { z } from 'zod'
 import { redirect } from 'next/navigation'

@@ -2,7 +2,7 @@
 
 import { apiFetch } from "@/app/lib/api";
 import { revalidatePath } from "next/cache";
-import { WishlistResponse } from "../definitions";
+import { WishlistResponse } from "@/app/lib/definitions";
 
 export async function toggleWishlist(
   isCurrentlyInWishlist: boolean,
