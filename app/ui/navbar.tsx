@@ -5,6 +5,24 @@ import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
+const WishlistIcon = () => (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+  </svg>
+);
+
+const OrdersIcon = () => (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
+  </svg>
+);
+
+const CartIcon = () => (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
+  </svg>
+);
+
 export default function Navbar(props: {
   isAuthenticated: boolean;
   itemsCounts: { cart: number; wishlist: number; orders: number };
@@ -35,36 +53,9 @@ export default function Navbar(props: {
   }, [mobileNavOpen]);
 
   const navItems = [
-    {
-      href: "/wishlist",
-      count: itemsCounts.wishlist,
-      title: "Wishlist",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-        </svg>
-      ),
-    },
-    {
-      href: "/orders",
-      count: itemsCounts.orders,
-      title: "Orders",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
-        </svg>
-      ),
-    },
-    {
-      href: "/cart",
-      count: itemsCounts.cart,
-      title: "Cart",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
-        </svg>
-      ),
-    },
+    { href: "/wishlist", count: itemsCounts.wishlist, title: "Wishlist", icon: <WishlistIcon /> },
+    { href: "/orders",   count: itemsCounts.orders,   title: "Orders",   icon: <OrdersIcon />   },
+    { href: "/cart",     count: itemsCounts.cart,     title: "Cart",     icon: <CartIcon />     },
   ];
 
   const mobileMenu =
@@ -98,15 +89,20 @@ export default function Navbar(props: {
                 </span>
 
                 <div className="grid grid-cols-3 gap-2 pt-1">
-                  <Link href="/cart" className="flex flex-col items-center justify-center p-3 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50 gap-1.5" onClick={() => setMobileNavOpen(false)}>
-                    {isAuthenticated && <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">Cart {itemsCounts.cart}</span>}
-                  </Link>
-                  <Link href="/wishlist" className="flex flex-col items-center justify-center p-3 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50 gap-1.5" onClick={() => setMobileNavOpen(false)}>
-                    {isAuthenticated && <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">Saved {itemsCounts.wishlist}</span>}
-                  </Link>
-                  <Link href="/orders" className="flex flex-col items-center justify-center p-3 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50 gap-1.5" onClick={() => setMobileNavOpen(false)}>
-                    {isAuthenticated && <span className="text-[9px] font-mono uppercase tracking-wider text-zinc-400">Orders {itemsCounts.orders}</span>}
-                  </Link>
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex flex-col items-center justify-center p-3 gap-1.5 border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
+                      onClick={() => setMobileNavOpen(false)}
+                    >
+                      {item.icon}
+                      <span className="text-[9px] font-mono uppercase tracking-wider">
+                        {item.title}
+                        {isAuthenticated && ` ${item.count}`}
+                      </span>
+                    </Link>
+                  ))}
                 </div>
               </div>
 
