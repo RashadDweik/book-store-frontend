@@ -2,7 +2,7 @@
 import BookGrid from "@/app/ui/books/book-grid";
 import SearchBar from "@/app/ui/search";
 import FiltersPanel from "@/app/ui/books/filters-panel";
-import { fetchBooks } from "@/app/lib/books/books";
+import { fetchBooks } from "@/app/lib/books/actions";
 import { fetchCategories } from "@/app/lib/categories/actions";
 import { fetchAuthors } from "@/app/lib/authors/actions";
 import { FetchBooksFilters } from "@/app/lib/definitions";

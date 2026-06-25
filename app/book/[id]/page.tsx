@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getBookDetails } from "@/app/lib/books/books";
+import { getBookDetails } from "@/app/lib/books/actions";
 import { BookCard, WishlistResponse } from "@/app/lib/definitions";
 import WishlistButton from "@/app/ui/wishlist/wishlist-button";
 import CartButton from "@/app/ui/cart/cart-button";
