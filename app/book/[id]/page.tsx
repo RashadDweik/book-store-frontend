@@ -3,7 +3,7 @@ import { getBookDetails } from "@/app/lib/books/books";
 import { BookCard, WishlistResponse } from "@/app/lib/definitions";
 import WishlistButton from "@/app/ui/wishlist/wishlist-button";
 import CartButton from "@/app/ui/cart/cart-button";
-import { fetchWishlist } from "@/app/lib/wishlist/wishlist";
+import { fetchWishlist } from "@/app/lib/wishlists/actions";
 import Link from "next/link";
 import { getSession } from "@/app/lib/auth/session";
 

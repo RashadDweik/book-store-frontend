@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { fetchWishlist } from "../lib/wishlist/wishlist";
-import { WishlistResponse } from "../lib/definitions";
+import { fetchWishlist } from "@/app/lib/wishlists/actions";
+import { WishlistResponse } from "@/app/lib/definitions";
 import { WishlistItemRow } from "@/app/ui/wishlist/wishlist-item";
 
 export default async function WishlistPage() {

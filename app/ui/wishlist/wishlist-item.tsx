@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { toggleWishlist } from "@/app/lib/wishlist/wishlist";
+import { toggleWishlist } from "@/app/lib/wishlists/actions";
 import { WishlistItem } from "@/app/lib/definitions";
 
 export function WishlistItemRow({ item }: { item: WishlistItem }) {
