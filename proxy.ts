@@ -6,6 +6,7 @@ const PROTECTED_ROUTES = [
   "/settings",
   "/wishlist",
   "/cart",
+  "/orders",
 ];
 const AUTH_ROUTES = ["/auth/login", "/auth/signup"];
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchCart } from "@/app/lib/cart/actions";
 import { CartItem } from "@/app/lib/definitions";
 import { CartItemRow } from "@/app/ui/cart/cart-item";
+import { CheckoutForm } from "@/app/ui/orders/checkout-form";
 
 export default async function Page() {
     
@@ -57,9 +58,7 @@ export default async function Page() {
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
-              <button className="w-full bg-zinc-900 text-white text-sm py-3 hover:bg-zinc-700 transition-colors">
-                Checkout
-              </button>
+               <CheckoutForm />
             </div>
           </div>
         </div>

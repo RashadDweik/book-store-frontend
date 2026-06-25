@@ -56,6 +56,29 @@ export interface CartResponse {
   items: CartItem[];
 }
 
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  book_id: string;
+  quantity: number;
+  price: string;
+  book: {
+    id: string;
+    title: string;
+    price: string;
+    cover_url?: string;
+  };
+}
+
+export interface OrderRead {
+  id: string;
+  user_id: string;
+  status: string;
+  total_amount: string; // Represented as string to maintain precision
+  created_at: string;
+  items: OrderItem[];
+}
+
 export interface FetchBooksFilters {
   q?: string;
   category_id?: string;
