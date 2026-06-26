@@ -1,40 +1,37 @@
 import { getOrders } from "@/app/lib/orders/actions";
-import Link from "next/link";
 import { OrderRead } from "@/app/lib/definitions";
+import OrderCard from "@/app/ui/orders/order-card";
 
 export default async function OrdersPage() {
   const orders: OrderRead[] = await getOrders();
 
   return (
-    <main className="max-w-3xl lg:max-w-5xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-light mb-10">My Orders</h1>
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+
+      {/* Section header — matches AuthorGrid */}
+      <div className="mb-8 border-b border-zinc-200 pb-4 dark:border-zinc-800">
+        <h2 className="text-xs font-mono uppercase tracking-widest text-zinc-400 mb-1">
+          Your
+        </h2>
+        <h3 className="text-2xl font-light tracking-tight text-zinc-900 dark:text-zinc-50">
+          Orders
+        </h3>
+      </div>
 
       {orders.length === 0 ? (
-        <p className="text-zinc-500">You have no orders yet.</p>
+        <div className="border border-zinc-200 dark:border-zinc-800 px-6 py-14 text-center">
+          <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+            No orders placed yet
+          </p>
+        </div>
       ) : (
-        <ul className="divide-y divide-zinc-100 border-t border-zinc-100">
+        <ul className="flex flex-col gap-4">
           {orders.map((order) => (
-            <li key={order.id} className="py-6 flex justify-between items-center">
-              <div>
-                <h2 className="font-medium">Order #{order.id.slice(0, 8)}</h2>
-                <p className="text-sm text-zinc-400">
-                  {new Date(order.created_at).toLocaleDateString()}
-                </p>
-              </div>
-              
-              <div className="text-right">
-                <span className="block font-medium">${order.total_amount}</span>
-                <Link 
-                  href={`/orders/${order.id}`}
-                  className="text-xs text-zinc-500 hover:text-zinc-900 underline"
-                >
-                  View Details
-                </Link>
-              </div>
-            </li>
+            <OrderCard key={order.id} order={order} />
           ))}
         </ul>
       )}
+
     </main>
   );
 }
