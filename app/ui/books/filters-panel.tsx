@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
-import { SlidersHorizontal, X, ChevronDown, Check } from "lucide-react";
+import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -180,7 +180,7 @@ export default function FiltersPanel({
     authorId: searchParams.get("author_id") ?? "",
   });
 
-  // 1. Sync local state when URL changes
+  // Sync local state when URL changes
   useEffect(() => {
     setFilters({
       sort: searchParams.get("sort") ?? "",
@@ -192,7 +192,7 @@ export default function FiltersPanel({
     });
   }, [searchParams]);
 
-  // 2. Lock body scroll on mobile when panel is open
+  // Lock body scroll on mobile when panel is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -204,7 +204,7 @@ export default function FiltersPanel({
     };
   }, [open]);
 
-  // Outside click & Escape handlers
+  // Outside click handler
   useEffect(() => {
     function handle(e: MouseEvent) {
       if (panelRef.current && !panelRef.current.contains(e.target as Node))
@@ -212,6 +212,15 @@ export default function FiltersPanel({
     }
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
+  }, []);
+
+  // Escape key handler
+  useEffect(() => {
+    function handle(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("keydown", handle);
+    return () => document.removeEventListener("keydown", handle);
   }, []);
 
   const applyFilters = useCallback(
@@ -235,24 +244,22 @@ export default function FiltersPanel({
     [pathname, router, searchParams],
   );
 
-function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
-  setFilters((prev) => {
-    const next = { ...prev, [key]: value };
+  function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
+    setFilters((prev) => {
+      const next = { ...prev, [key]: value };
 
-    // Validation: Ensure minPrice is not greater than maxPrice
-    const min = parseFloat(next.minPrice as string);
-    const max = parseFloat(next.maxPrice as string);
+      const min = parseFloat(next.minPrice as string);
+      const max = parseFloat(next.maxPrice as string);
 
-    if (!isNaN(min) && !isNaN(max) && min > max) {
-      // If the user changed min, adjust max to match (or vice-versa)
-      return key === "minPrice" 
-        ? { ...next, maxPrice: next.minPrice } 
-        : { ...next, minPrice: next.maxPrice };
-    }
+      if (!isNaN(min) && !isNaN(max) && min > max) {
+        return key === "minPrice"
+          ? { ...next, maxPrice: next.minPrice }
+          : { ...next, minPrice: next.maxPrice };
+      }
 
-    return next;
-  });
-}
+      return next;
+    });
+  }
 
   function handleApply() {
     applyFilters(filters);
@@ -261,7 +268,7 @@ function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
 
   function handleReset() {
     setOpen(false);
-    router.push(pathname); // Clears all params by navigating to base path
+    router.push(pathname);
   }
 
   const activeCount = Object.values(filters).filter(
@@ -270,30 +277,56 @@ function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
 
   return (
     <div className="relative" ref={panelRef}>
+      <style>{`
+        @keyframes panel-slide-up {
+          from { transform: translateY(100%); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+        @keyframes panel-fade-down {
+          from { transform: translateY(-8px) scale(0.98); opacity: 0; }
+          to   { transform: translateY(0)    scale(1);    opacity: 1; }
+        }
+        @keyframes backdrop-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        .filters-panel-mobile {
+          animation: panel-slide-up 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .filters-panel-desktop {
+          animation: panel-fade-down 200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+          transform-origin: top right;
+        }
+        .filters-backdrop {
+          animation: backdrop-in 200ms ease both;
+        }
+      `}</style>
+
+      {/* Trigger button */}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         className={`
-    flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors
-    ${
-      open || activeCount > 0
-        ? "bg-zinc-900 text-white border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100"
-        : "bg-white text-zinc-700 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500"
-    }
-  `}
+          flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors
+          ${
+            open || activeCount > 0
+              ? "bg-zinc-900 text-white border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100"
+              : "bg-white text-zinc-700 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500"
+          }
+        `}
       >
         <SlidersHorizontal size={15} />
         <span>Filters</span>
         {activeCount > 0 && (
           <span
             className={`
-        inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold
-        ${
-          open || activeCount > 0
-            ? "bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100"
-            : "bg-zinc-800 text-white dark:bg-zinc-700"
-        }
-      `}
+              inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-semibold
+              ${
+                open || activeCount > 0
+                  ? "bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100"
+                  : "bg-zinc-800 text-white dark:bg-zinc-700"
+              }
+            `}
           >
             {activeCount}
           </span>
@@ -302,72 +335,134 @@ function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
 
       {open && (
         <>
+          {/* Mobile backdrop */}
           <div
-            className="fixed inset-0 bg-black/20 dark:bg-black/40 z-30 sm:hidden"
+            className="filters-backdrop fixed inset-0 bg-black/20 dark:bg-black/40 z-30 sm:hidden"
             onClick={() => setOpen(false)}
           />
-          <div className="z-40 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-xl fixed bottom-0 left-0 right-0 rounded-b-none sm:absolute sm:bottom-auto sm:left-0 sm:top-full sm:mt-2 sm:w-80 sm:rounded-xl">
-            <div className="flex items-center justify-between px-4 py-3.5 border-b border-zinc-100 dark:border-zinc-800">
-              <span className="text-sm font-semibold">Filters & Sorting</span>
-              <button onClick={() => setOpen(false)}>
-                <X size={16} />
-              </button>
-            </div>
-            <div className="p-4 flex flex-col gap-5 max-h-[70vh] overflow-y-auto sm:max-h-none">
-              <SelectDropdown
-                label="Sort by"
-                value={filters.sort}
-                onChange={(v) => update("sort", v)}
-                options={SORT_OPTIONS}
-              />
-              <PriceRange
-                min={filters.minPrice}
-                max={filters.maxPrice}
-                onMinChange={(v) => update("minPrice", v)}
-                onMaxChange={(v) => update("maxPrice", v)}
-              />
-              <Toggle
-                label="In stock only"
-                checked={filters.inStock}
-                onChange={(v) => update("inStock", v)}
-              />
-              <div className="border-t border-zinc-100 dark:border-zinc-800" />
-              <SelectDropdown
-                label="Category"
-                value={filters.categoryId}
-                onChange={(v) => update("categoryId", v)}
-                placeholder="All categories"
-                options={categories.map((c) => ({
-                  label: c.name,
-                  value: c.id,
-                }))}
-              />
-              <SelectDropdown
-                label="Author"
-                value={filters.authorId}
-                onChange={(v) => update("authorId", v)}
-                placeholder="All authors"
-                options={authors.map((a) => ({ label: a.name, value: a.id }))}
-              />
-            </div>
-            <div className="flex items-center gap-2 px-4 py-3.5 border-t border-zinc-100 dark:border-zinc-800">
-              <button
-                onClick={handleReset}
-                className="flex-1 px-3 py-2 rounded-lg text-sm font-medium border border-zinc-200"
-              >
-                Reset
-              </button>
-              <button
-                onClick={handleApply}
-                disabled={isPending}
-                className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-900 text-white"
-              >
-                Apply
-              </button>
-            </div>
+
+          {/* Mobile: bottom sheet */}
+          <div className="filters-panel-mobile sm:hidden z-40 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-t-xl fixed bottom-0 left-0 right-0">
+            <PanelContents
+              filters={filters}
+              categories={categories}
+              authors={authors}
+              isPending={isPending}
+              update={update}
+              onApply={handleApply}
+              onReset={handleReset}
+              onClose={() => setOpen(false)}
+            />
+          </div>
+
+          {/* Desktop: anchored dropdown, right-aligned */}
+          <div className="filters-panel-desktop hidden sm:block absolute top-full right-0 mt-2 w-80 z-40 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-xl">
+            <PanelContents
+              filters={filters}
+              categories={categories}
+              authors={authors}
+              isPending={isPending}
+              update={update}
+              onApply={handleApply}
+              onReset={handleReset}
+              onClose={() => setOpen(false)}
+            />
           </div>
         </>
       )}
     </div>
+  );
+}
+
+// ─── Shared panel contents ────────────────────────────────────────────────────
+
+function PanelContents({
+  filters,
+  categories,
+  authors,
+  isPending,
+  update,
+  onApply,
+  onReset,
+  onClose,
+}: {
+  filters: FiltersState;
+  categories: Category[];
+  authors: Author[];
+  isPending: boolean;
+  update: <K extends keyof FiltersState>(key: K, value: FiltersState[K]) => void;
+  onApply: () => void;
+  onReset: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <>
+      <div className="flex items-center justify-between px-4 py-3.5 border-b border-zinc-100 dark:border-zinc-800">
+        <span className="text-sm font-semibold">Filters & Sorting</span>
+        <button
+          onClick={onClose}
+          className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+        >
+          <X size={16} />
+        </button>
+      </div>
+
+      <div className="p-4 flex flex-col gap-5 max-h-[70vh] overflow-y-auto sm:max-h-none">
+        <SelectDropdown
+          label="Sort by"
+          value={filters.sort}
+          onChange={(v) => update("sort", v)}
+          options={[
+            { label: "Relevance", value: "" },
+            { label: "Price: Low to High", value: "price" },
+            { label: "Price: High to Low", value: "-price" },
+            { label: "Newest First", value: "-created_at" },
+            { label: "Oldest First", value: "created_at" },
+          ]}
+        />
+        <PriceRange
+          min={filters.minPrice}
+          max={filters.maxPrice}
+          onMinChange={(v) => update("minPrice", v)}
+          onMaxChange={(v) => update("maxPrice", v)}
+        />
+        <Toggle
+          label="In stock only"
+          checked={filters.inStock}
+          onChange={(v) => update("inStock", v)}
+        />
+        <div className="border-t border-zinc-100 dark:border-zinc-800" />
+        <SelectDropdown
+          label="Category"
+          value={filters.categoryId}
+          onChange={(v) => update("categoryId", v)}
+          placeholder="All categories"
+          options={categories.map((c) => ({ label: c.name, value: c.id }))}
+        />
+        <SelectDropdown
+          label="Author"
+          value={filters.authorId}
+          onChange={(v) => update("authorId", v)}
+          placeholder="All authors"
+          options={authors.map((a) => ({ label: a.name, value: a.id }))}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 px-4 py-3.5 border-t border-zinc-100 dark:border-zinc-800">
+        <button
+          onClick={onReset}
+          className="flex-1 px-3 py-2 rounded-lg text-sm font-medium border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+        >
+          Reset
+        </button>
+        <button
+          onClick={onApply}
+          disabled={isPending}
+          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-300 transition-colors disabled:opacity-50"
+        >
+          {isPending ? "Applying…" : "Apply"}
+        </button>
+      </div>
+    </>
   );
 }
