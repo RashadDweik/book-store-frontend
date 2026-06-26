@@ -1,5 +1,5 @@
-import { BooksPageSkeleton } from "@/app/ui/skeletons";
+import { CatalogueSkeleton} from "@/app/ui/skeletons";
 
 export default async function Loading(){
-    return <BooksPageSkeleton/>
+    return <CatalogueSkeleton/>
 }
