@@ -20,7 +20,7 @@ export function WishlistItemRow({ item }: { item: WishlistItem }) {
       className={`flex items-center gap-4 sm:gap-6 px-5 sm:px-6 py-4 sm:py-5 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0 transition-opacity ${loading ? "opacity-40" : ""}`}
     >
       {/* Cover */}
-      <div className="relative w-10 h-3.75rem sm:w-12 sm:h-4.5rem shrink-0 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+      <div className="relative w-10 h-[3.75rem] sm:w-12 sm:h-[4.5rem] shrink-0 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
         {item.book.cover_url ? (
           <Image
             src={item.book.cover_url}
