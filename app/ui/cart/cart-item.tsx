@@ -26,9 +26,11 @@ export function CartItemRow({ item }: { item: CartItem }) {
   }
 
   return (
-    <li className={`flex items-center gap-5 lg:gap-8 py-5 transition-opacity ${loading ? "opacity-40" : ""}`}>
+    <li
+      className={`flex items-center gap-4 sm:gap-6 px-5 sm:px-6 py-4 sm:py-5 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0 transition-opacity ${loading ? "opacity-40" : ""}`}
+    >
       {/* Cover */}
-      <div className="relative w-12 h-16 lg:w-16 lg:h-20 shrink-0 bg-zinc-100">
+      <div className="relative w-10 h-16 sm:w-12 sm:h-20 shrink-0 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
         {item.book.cover_url ? (
           <Image
             src={item.book.cover_url}
@@ -37,41 +39,47 @@ export function CartItemRow({ item }: { item: CartItem }) {
             className="object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-zinc-100" />
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-[10px] font-mono text-zinc-300 dark:text-zinc-600">—</span>
+          </div>
         )}
       </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <Link href={`/books/${item.book.id}`} className="hover:underline underline-offset-2">
-          <h2 className="font-medium text-sm lg:text-base truncate">{item.book.title}</h2>
+        <Link href={`/books/${item.book.id}`} className="group/title inline-block max-w-full">
+          <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate group-hover/title:underline underline-offset-2">
+            {item.book.title}
+          </h2>
         </Link>
-        <p className="text-xs lg:text-sm text-zinc-400 mt-0.5 truncate">
+        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5 truncate">
           {item.book.authors?.map((a) => a.name).join(", ")}
         </p>
       </div>
 
-      {/* Quantity */}
+      {/* Quantity stepper */}
       <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={() => handleQuantityChange(quantity - 1)}
           disabled={loading || quantity <= 1}
-          className="text-zinc-400 hover:text-zinc-600 transition-colors disabled:opacity-30"
+          className="text-zinc-300 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors disabled:opacity-30"
         >
-          <Minus size={14} />
+          <Minus size={13} />
         </button>
-        <span className="text-sm w-4 text-center">{quantity}</span>
+        <span className="text-xs font-mono w-4 text-center text-zinc-900 dark:text-zinc-100 tabular-nums">
+          {quantity}
+        </span>
         <button
           onClick={() => handleQuantityChange(quantity + 1)}
           disabled={loading}
-          className="text-zinc-400 hover:text-zinc-600 transition-colors disabled:opacity-30"
+          className="text-zinc-300 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors disabled:opacity-30"
         >
-          <Plus size={14} />
+          <Plus size={13} />
         </button>
       </div>
 
-      {/* Price */}
-      <span className="text-sm lg:text-base text-zinc-600 shrink-0">
+      {/* Line total */}
+      <span className="text-sm font-medium tabular-nums text-zinc-900 dark:text-zinc-100 shrink-0 w-16 text-right">
         ${(parseFloat(item.book.price) * quantity).toFixed(2)}
       </span>
 
@@ -79,9 +87,10 @@ export function CartItemRow({ item }: { item: CartItem }) {
       <button
         onClick={handleRemove}
         disabled={loading}
-        className="text-zinc-300 hover:text-zinc-600 transition-colors disabled:opacity-40 shrink-0"
+        aria-label="Remove from cart"
+        className="shrink-0 text-zinc-300 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors disabled:opacity-40"
       >
-        <X size={16} />
+        <X size={14} strokeWidth={1.5} />
       </button>
     </li>
   );
