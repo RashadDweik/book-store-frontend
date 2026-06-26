@@ -20,8 +20,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bookstore",
+  title: "The Wisdom Vault",
   description: "Minimalist book archiving and management platform",
+  icons: "./favicon.ico"
 };
 
 export default async function RootLayout({
@@ -51,11 +52,6 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-        <title>The Wisdom Vault - An Ultimate Collection Of Books</title>
-        <link rel="icon" href="./the-wisdom-vault-icon.ico" />
-      </head>
-
       <body className="min-h-full flex flex-col bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-200">
         {session.isAuthenticated && <AuthRefresher />}
         {/* Navigation Layer */}
