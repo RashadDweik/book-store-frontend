@@ -11,14 +11,16 @@ export function WishlistItemRow({ item }: { item: WishlistItem }) {
 
   async function handleRemove() {
     setLoading(true);
-    await toggleWishlist(true ,item.id, item.book.id);
+    await toggleWishlist(true, item.id, item.book.id);
     setLoading(false);
   }
 
   return (
-    <li className={`flex items-center gap-5 lg:gap-8 py-5 transition-opacity ${loading ? "opacity-40" : ""}`}>
+    <li
+      className={`flex items-center gap-4 sm:gap-6 px-5 sm:px-6 py-4 sm:py-5 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0 transition-opacity ${loading ? "opacity-40" : ""}`}
+    >
       {/* Cover */}
-      <div className="relative w-12 h-16 lg:w-16 lg:h-20 shrink-0 bg-zinc-100">
+      <div className="relative w-10 h-3.75rem sm:w-12 sm:h-4.5rem shrink-0 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
         {item.book.cover_url ? (
           <Image
             src={item.book.cover_url}
@@ -27,30 +29,48 @@ export function WishlistItemRow({ item }: { item: WishlistItem }) {
             className="object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-zinc-100" />
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-[10px] font-mono text-zinc-300 dark:text-zinc-600">—</span>
+          </div>
         )}
       </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <Link href={`/book/${item.book.id}`} className="hover:underline underline-offset-2">
-          <h2 className="font-medium text-sm lg:text-base truncate">{item.book.title}</h2>
+        <Link
+          href={`/book/${item.book.id}`}
+          className="group/title inline-block max-w-full"
+        >
+          <h2 className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate group-hover/title:underline underline-offset-2">
+            {item.book.title}
+          </h2>
         </Link>
-        <p className="text-xs lg:text-sm text-zinc-400 mt-0.5 truncate">
+        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5 truncate">
           {item.book.authors?.map((a) => a.name).join(", ")}
         </p>
       </div>
 
       {/* Price */}
-      <span className="text-sm lg:text-base text-zinc-600 shrink-0">${item.book.price}</span>
+      <span className="text-sm font-medium tabular-nums text-zinc-900 dark:text-zinc-100 shrink-0">
+        ${item.book.price}
+      </span>
 
       {/* Remove */}
       <button
         onClick={handleRemove}
         disabled={loading}
-        className="text-zinc-300 hover:text-zinc-600 transition-colors disabled:opacity-40 shrink-0"
+        aria-label="Remove from wishlist"
+        className="shrink-0 text-zinc-300 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors disabled:opacity-40"
       >
-         X
+        <svg
+          className="w-3.5 h-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
     </li>
   );
