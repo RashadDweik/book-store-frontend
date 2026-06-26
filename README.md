@@ -142,10 +142,3 @@ This frontend pairs with a **FastAPI** backend. See the [book-store-backend](htt
 The backend provides REST endpoints for books, authors, categories, cart, wishlist, orders, and auth, along with JWT issuance, PostgreSQL persistence, Redis caching, and Open Library API integration for book covers.
 
 ---
-
-## Roadmap
-
-- [ ] AI-powered book recommendation chatbot
-- [ ] Vector search (pgvector / Pinecone) for semantic recommendations
-- [ ] Review and rating system
-- [ ] Admin dashboard
