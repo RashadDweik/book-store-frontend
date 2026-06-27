@@ -137,7 +137,7 @@ pnpm start
 
 ## Backend
 
-This frontend pairs with a **FastAPI** backend. See the [book-store-backend](https://github.com/RashadDweik/book-store-backend) repository for setup.
+This frontend pairs with a **FastAPI** backend. See the [book-store-backend](https://github.com/RashadDweik/book-store-api) repository for setup.
 
 The backend provides REST endpoints for books, authors, categories, cart, wishlist, orders, and auth, along with JWT issuance, PostgreSQL persistence, Redis caching, and Open Library API integration for book covers.
 
