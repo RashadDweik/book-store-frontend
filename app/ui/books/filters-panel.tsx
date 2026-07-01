@@ -87,11 +87,13 @@ function PriceRange({
   max,
   onMinChange,
   onMaxChange,
+  error,
 }: {
   min: string;
   max: string;
   onMinChange: (v: string) => void;
   onMaxChange: (v: string) => void;
+  error?: string;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -127,6 +129,9 @@ function PriceRange({
           />
         </div>
       </div>
+      {error && (
+        <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+      )}
     </div>
   );
 }
@@ -245,23 +250,12 @@ export default function FiltersPanel({
   );
 
   function update<K extends keyof FiltersState>(key: K, value: FiltersState[K]) {
-    setFilters((prev) => {
-      const next = { ...prev, [key]: value };
-
-      const min = parseFloat(next.minPrice as string);
-      const max = parseFloat(next.maxPrice as string);
-
-      if (!isNaN(min) && !isNaN(max) && min > max) {
-        return key === "minPrice"
-          ? { ...next, maxPrice: next.minPrice }
-          : { ...next, minPrice: next.maxPrice };
-      }
-
-      return next;
-    });
+    setFilters((prev) => ({ ...prev, [key]: value }));
   }
 
   function handleApply() {
+    if (priceRangeError) return;
+
     applyFilters(filters);
     setOpen(false);
   }
@@ -274,6 +268,17 @@ export default function FiltersPanel({
   const activeCount = Object.values(filters).filter(
     (v) => v !== "" && v !== false,
   ).length;
+
+  const minPrice = parseFloat(filters.minPrice);
+  const maxPrice = parseFloat(filters.maxPrice);
+  const priceRangeError =
+    filters.minPrice !== "" &&
+    filters.maxPrice !== "" &&
+    !isNaN(minPrice) &&
+    !isNaN(maxPrice) &&
+    minPrice > maxPrice
+      ? "Please enter a minimum price that is less than or equal to the maximum price."
+      : "";
 
   return (
     <div className="relative" ref={panelRef}>
@@ -348,6 +353,7 @@ export default function FiltersPanel({
               categories={categories}
               authors={authors}
               isPending={isPending}
+              priceRangeError={priceRangeError}
               update={update}
               onApply={handleApply}
               onReset={handleReset}
@@ -362,6 +368,7 @@ export default function FiltersPanel({
               categories={categories}
               authors={authors}
               isPending={isPending}
+              priceRangeError={priceRangeError}
               update={update}
               onApply={handleApply}
               onReset={handleReset}
@@ -381,6 +388,7 @@ function PanelContents({
   categories,
   authors,
   isPending,
+  priceRangeError,
   update,
   onApply,
   onReset,
@@ -390,6 +398,7 @@ function PanelContents({
   categories: Category[];
   authors: Author[];
   isPending: boolean;
+  priceRangeError: string;
   update: <K extends keyof FiltersState>(key: K, value: FiltersState[K]) => void;
   onApply: () => void;
   onReset: () => void;
@@ -425,6 +434,7 @@ function PanelContents({
           max={filters.maxPrice}
           onMinChange={(v) => update("minPrice", v)}
           onMaxChange={(v) => update("maxPrice", v)}
+          error={priceRangeError}
         />
         <Toggle
           label="In stock only"
@@ -457,7 +467,7 @@ function PanelContents({
         </button>
         <button
           onClick={onApply}
-          disabled={isPending}
+          disabled={isPending || Boolean(priceRangeError)}
           className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-300 transition-colors disabled:opacity-50"
         >
           {isPending ? "Applying…" : "Apply"}
